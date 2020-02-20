@@ -45,7 +45,7 @@ Open a cmd in the folder where ctc.bat is located, and type:
 
 * **Daan de Waard** - *Initial work* - [dwaard](https://github.com/dwaard)
 
-See also the list of [contributors](https://github.com/HZ-HBO-ICT/blok-3-casustoets-bsmdb/graphs/contributors) who 
+See also the list of [contributors](https://github.com/HZ-HBO-ICT/ctc/graphs/contributors) who 
 participated in this project.
 
 ## Licensing
