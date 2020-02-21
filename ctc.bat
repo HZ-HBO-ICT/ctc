@@ -80,7 +80,7 @@ ECHO Launching Chrome...
 START Chrome localhost 
 
 ECHO.
-ECHO Done! Enjoy Grading
+ECHO Done setting up %1! Enjoy Grading
 GOTO End
 
 REM ================ HELP MESSAGES ============================================
