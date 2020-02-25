@@ -59,6 +59,11 @@ FOR %%f IN (%FileArray%) DO (
     )
 )
 
+REM =================== Open student repo in browser ==========================
+ECHO.
+ECHO Launching Chrome for Github repository...
+START Chrome %GithubBaseURL%%1
+
 REM ======= Run some composer and artisan commands to reset the app ===========
 ECHO.
 CD %LaradockFolder%
@@ -76,7 +81,7 @@ CD %StartFolder%
 
 REM ============= Start Chrome browser with localhost URL =====================
 ECHO.
-ECHO Launching Chrome...
+ECHO Launching Chrome for localhost...
 START Chrome localhost 
 
 ECHO.
