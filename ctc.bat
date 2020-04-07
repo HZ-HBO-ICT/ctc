@@ -28,6 +28,8 @@ CD %ProjectFolder%
 REM =================== Use GIT to reset the project ==========================
 ECHO Reset the base project folder to the HEAD version in git
 git reset --hard
+REM also remove untracked files and folders
+git clean -fd
 
 REM ================= Remove and copy files and folders =======================
 ECHO.
