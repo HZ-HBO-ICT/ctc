@@ -17,29 +17,29 @@ IF "%1"=="" GOTO HelpBasic
 
 REM Assign and validate student folder
 SET Student=%1
-CALL :TRIM %Student% Student
 SET StudentFolder=%StudentsBaseFolder%\%Student%
-ECHO [%StudentFolder%]
 REM GOTO End
 IF NOT EXIST %StudentFolder% GOTO HelpFolderNotExist
 
 REM Remember the current folder
 SET StartFolder=%__CD__%
 
-REM Switch to the project folder
-CD %ProjectFolder%
-
-REM =================== Use GIT to reset the project ==========================
-ECHO Reset the base project folder to the HEAD version in git
-git reset --hard
-REM also remove untracked files and folders
-git clean -fd
-
 REM ================= Pull code from student repository =======================
 ECHO Pull latest code from %Student% github repository 
 CD %StudentFolder%
 git pull origin %Branch%
+IF %ERRORLEVEL% GEQ 1 GOTO Error
 CD %ProjectFolder%
+
+REM =================== Use GIT to reset the project ==========================
+REM Switch to the project folder
+CD %ProjectFolder%
+ECHO Reset the base project folder to the HEAD version in git
+git reset --hard
+IF %ERRORLEVEL% GEQ 1 GOTO Error
+REM also remove untracked files and folders
+git clean -fd
+IF %ERRORLEVEL% GEQ 1 GOTO Error
 
 REM ================= Remove and copy files and folders =======================
 ECHO.
@@ -81,12 +81,15 @@ ECHO.
 CD %LaradockFolder%
 ECHO Update autoload file
 docker-compose exec workspace composer dump-autoload
+IF %ERRORLEVEL% GEQ 1 GOTO Error
 ECHO.
 ECHO Make fresh database and seed it
 docker-compose exec workspace php artisan migrate:fresh --seed
+IF %ERRORLEVEL% GEQ 1 GOTO Error
 ECHO.
 ECHO Clear all the compiled views
 docker-compose exec workspace php artisan view:clear
+IF %ERRORLEVEL% GEQ 1 GOTO Error
 
 REM ============ Change to the folder that was on the start of the ============
 CD %StartFolder%
@@ -108,7 +111,10 @@ GOTO End
 
 :HelpFolderNotExist
     ECHO %StudentFolder% does not exist
+GOTO End
 
+:Error
+ECHO The last command failed with error code %ERRORLEVEL%
 REM ============================= END OF BATCH FILE ===========================
 :End
 CD %StartFolder%
