@@ -9,6 +9,7 @@ and resets the app so that the students elaboration can be tested.
 
 What's all the bells and whistles this project can perform?
 * Resets the project folder to HEAD in git
+* Pulls latest code from student repository
 * Copies app, database, resources and other relevant folders
 * Regenerates autoload files
 * Drop database tables and performs migration and seed

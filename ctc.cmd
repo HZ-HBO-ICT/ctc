@@ -15,8 +15,12 @@ FOR /f "delims=" %%x IN (.env) DO (
 REM ========================= Validate user input =============================
 IF "%1"=="" GOTO HelpBasic
 
-REM Assign and validate student folder 
-SET StudentFolder=%StudentsBaseFolder%\%1
+REM Assign and validate student folder
+SET Student=%1
+CALL :TRIM %Student% Student
+SET StudentFolder=%StudentsBaseFolder%\%Student%
+ECHO [%StudentFolder%]
+REM GOTO End
 IF NOT EXIST %StudentFolder% GOTO HelpFolderNotExist
 
 REM Remember the current folder
@@ -31,9 +35,15 @@ git reset --hard
 REM also remove untracked files and folders
 git clean -fd
 
+REM ================= Pull code from student repository =======================
+ECHO Pull latest code from %Student% github repository 
+CD %StudentFolder%
+git pull origin %Branch%
+CD %ProjectFolder%
+
 REM ================= Remove and copy files and folders =======================
 ECHO.
-ECHO Copy files and folders from %1
+ECHO Copy files and folders from %Student% working copy
 FOR %%f IN (%FileArray%) DO (
     SET "var=%%f"
     ECHO !var! 
@@ -64,7 +74,7 @@ FOR %%f IN (%FileArray%) DO (
 REM =================== Open student repo in browser ==========================
 ECHO.
 ECHO Launching Chrome for Github repository...
-START Chrome %GithubBaseURL%%1
+START Chrome %GithubBaseURL%%Student%
 
 REM ======= Run some composer and artisan commands to reset the app ===========
 ECHO.
@@ -87,17 +97,18 @@ ECHO Launching Chrome for localhost...
 START Chrome localhost 
 
 ECHO.
-ECHO Done setting up %1! Enjoy Grading
+ECHO Done setting up %Student%! Enjoy Grading
 GOTO End
 
 REM ================ HELP MESSAGES ============================================
 :HelpBasic
-    ECHO Geen foldernaam aangegeven
+    ECHO No folder name specified
     ECHO usage: ctc valid-folder-name
 GOTO End
 
 :HelpFolderNotExist
-    ECHO %StudentFolder% bestaat niet
+    ECHO %StudentFolder% does not exist
 
 REM ============================= END OF BATCH FILE ===========================
 :End
+CD %StartFolder%
