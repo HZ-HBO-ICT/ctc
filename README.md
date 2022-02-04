@@ -18,29 +18,38 @@ What's all the bells and whistles this project can perform?
 ## Installation
 
 Make sure the base repository of the casustoets project is correctly set up 
-with laradock and the laradock workspace is up.
+with Laravel Sail.
 
-Copy the ctc.bat anywhere on your harddrive
+Clone this repo anywhere on your harddrive
 
-Create a .env file in the same path. You can use the .env.example file.
+Create a .env file in the same path. You can use the .env.example file. Chage
+settings to the correct ones.
 
-Edit .env:
-* Set ProjectFolder to the base project folder
-* Set StudentsBaseFolder to the folder where all student repositories are 
-located
-* Set Laradock folder to the folder (relative to ProjectFolder) where 
-docker-compose commands can be executed
-* Set FileArray to a list of file and folder names in the root of the project 
-that should be copied
+
+### Linux/WSL2
+Do not forget to chmod the .sh files
+
+```shell script
+> chmod +x ./*.sh
+```
 
 
 ## Usage
-
+ 
+### Windows
 Open a cmd in the folder where ctc.bat is located, and type:
 
 ```shell script
 > ctc student-repo-folder-name
 ```
+
+### Linux/WSL2
+Open the terminal in the folder where ctc.sh is located, and type:
+
+```shell script
+> ./ctc.sh student-repo-folder-name
+```
+
 
 ## Authors
 
