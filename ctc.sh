@@ -84,8 +84,11 @@ echo "Clear all the compiled views"
 ./vendor/bin/sail artisan view:clear
 
 echo ""
-echo "Make fresh database and seed it"
-./vendor/bin/sail artisan migrate:fresh --seed
+echo "Make fresh database"
+./vendor/bin/sail artisan migrate:fresh
+
+echo "Seed the database"
+./vendor/bin/sail artisan db:seed
 
 # Finally, return to the start folder
 cd $StartFolder
