@@ -29,18 +29,11 @@ then
 fi
 echo "Student code folder is: $StudentFolder"
 
-# ================= Pull code from student repository =======================
-echo ""
-StudentRepo="$GithubBaseURL$StudentAccountName"
-echo "Pull latest code from github repository: $StudentRepo $Branch" 
-# cd $StudentFolder
-# git pull origin $Branch
-
 # =================== Use GIT to reset the project ==========================
 # Switch to the project folder
 echo ""
+echo "Reset the $ProjectFolder folder to the HEAD version in git"
 cd $ProjectFolder
-echo "Reset the base project folder to the HEAD version in git"
 git reset --hard
 # also remove untracked files and folders
 git clean -fd
