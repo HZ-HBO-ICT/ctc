@@ -5,11 +5,14 @@ CYAN='\033[0;36m'
 RED='\033[0;31m'
 
 # Usage info
-show_help() {
+function show_help {
 cat << EOF
-Usage: ${0##*/} [-hvx] [FOLDER]
-Set the case exam template app state.
-    -f          also creates a fresh feedback file
+Usage: ${0##*/} [-fhlv] [FOLDER]
+Set the case exam template app state using git and cp and optional Laravel commands.
+It can also run PHP_CodeSniffer to preset a feedback md file in the students project 
+root directory
+    -f          also creates a fresh feedback file with phpcs output in the
+                student folder and opens it with VSCode
     -h          display this help and exit
     -l          include Laravel commands like migrations and cache clearing
     -v          verbose mode. Can be used multiple times for increased
