@@ -1,7 +1,7 @@
 # CasusToets Test environment
 #!/bin/sh
 NC='\033[0m'
-GREEN='\033[0;36m'
+CYAN='\033[0;36m'
 RED='\033[0;31m'
 
 # Usage info
@@ -22,7 +22,7 @@ EOF
 
 function exec_command {
     ((verbose >= 3)) && set -x
-    $1
+    ${1}
     exit_status=$?
     { set +x; } 2>/dev/null
     return $exit_status
@@ -62,7 +62,7 @@ shift "$((OPTIND-1))"   # Discard the options and sentinel --
 
 # Remember the start folder on startup
 StartFolder=$(pwd)
-log 3 "${GREEN}Will return to folder $StartFolder${NC}"
+log 3 "${CYAN}Will return to folder $StartFolder${NC}"
 
 # Read the environment variables file
 log 3 "Reading .env file"
@@ -85,21 +85,21 @@ fi
 
 if [ ! -z "$StudentAccountName" ]
 then
-    log 2 "${GREEN}Student account name set to:${NC} $StudentAccountName"
+    log 2 "${CYAN}Student account name set to:${NC} $StudentAccountName"
 else
     log 2 "No student account name specified. Will only reset the template folder"
 fi
 
 # =================== Use GIT to reset the project ==========================
-log 1 "${GREEN}Switch to Case Exam Template folder${NC}"
+log 1 "${CYAN}Switch to Case Exam Template folder${NC}"
 exec_command "cd $ProjectFolder"
 
-log 1 "${GREEN}Reset the folder to the HEAD version in git${NC}"
+log 1 "${CYAN}Reset the folder to the HEAD version in git${NC}"
 OPTIONS="--hard"
 (( verbose < 1 )) && OPTIONS="${OPTIONS} --quiet"
 exec_command "git reset ${OPTIONS}"
 
-log 1 "${GREEN}Clean the folder${NC}"
+log 1 "${CYAN}Clean the folder${NC}"
 OPTIONS="-d --force "
 (( verbose < 1 )) && OPTIONS="${OPTIONS} --quiet"
 exec_command "git clean ${OPTIONS}"
@@ -107,13 +107,13 @@ exec_command "git clean ${OPTIONS}"
 # ======================== Copy files and folders ===========================
 if [ ! -z "$StudentAccountName" ] 
 then
-    log 1 "${GREEN}Copy files and folders from $StudentFolder${NC}"
+    log 1 "${CYAN}Copy files and folders from $StudentFolder${NC}"
     # Parse $FileArray into an array
     IFS=' ' read -r -a FileArray <<< "$Files"
     # Loop through each element in the array
     for Filename in "${FileArray[@]}"
     do
-        log 2 "${GREEN}Copy file/folder: ${NC}$Filename"
+        log 2 "${CYAN}Copy file/folder: ${NC}$Filename"
         OPTIONS="--recursive"
         ((verbose >=3)) && OPTIONS="${OPTIONS} -v"
         exec_command "cp ${OPTIONS} $StudentFolder/$Filename ."
@@ -126,25 +126,29 @@ then
     OPTIONS=""
     ((verbose >=3)) && OPTIONS="-vvv"
 
-    log 1 "${GREEN}Update autoload file${NC}"
+    log 1 "${CYAN}Update autoload file${NC}"
     exec_command "./vendor/bin/sail composer ${OPTIONS} dump-autoload"
 
-    log 1 "${GREEN}Clear all the compiled views${NC}"
+    log 1 "${CYAN}Clear all the compiled views${NC}"
     exec_command "./vendor/bin/sail artisan view:clear ${OPTIONS}"
     
-    log 1 "${GREEN}Make fresh database${NC}"
+    log 1 "${CYAN}Make fresh database${NC}"
     exec_command "./vendor/bin/sail artisan migrate:fresh ${OPTIONS}"
     
     if (($?<=0))
     then
-        log 1 "${GREEN}Seed the database${NC}"
+        log 1 "${CYAN}Seed the database${NC}"
         exec_command "./vendor/bin/sail artisan db:seed ${OPTIONS}"
     else
         log 1 "${RED}Error during migration. Skipping database seeding${NC}"
     fi
+
+    log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
+    docker-compose exec -T laravel.test ./vendor/bin/phpcs >&1 | tee out.txt
+    log 1 "${CYAN}This output is also written to out.txt"
 fi
 
 # Finally, return to the start folder
-log 1 "${GREEN}Return to the start folder${NC}"
+log 1 "${CYAN}Return to the start folder${NC}"
 cd $StartFolder
 # End of file
