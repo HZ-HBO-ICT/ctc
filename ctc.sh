@@ -11,10 +11,9 @@ Usage: ${0##*/} [-hvx] [FOLDER]
 Set the case exam template app state.
     -f          also creates a fresh feedback file
     -h          display this help and exit
-    -q          quiet mode
+    -l          include Laravel commands like migrations and cache clearing
     -v          verbose mode. Can be used multiple times for increased
                 verbosity.
-    -x          Exclude Laravel commands like migrations and cache clearing.
 
 [FOLDER] specifies the source folder of the students project to copy from. If
          omitted, ctc will only reset the case exam to the latest commit.
@@ -35,7 +34,7 @@ function log {
 
 # Initialize our own variables:
 feedback=0
-include_laravel=1
+include_laravel=0
 verbose=1
 quiet=0
 folder=""
@@ -43,18 +42,16 @@ folder=""
 # Resetting OPTIND is necessary if getopts was used previously in the script.
 # It is a good idea to make OPTIND local if you process options in a function.
 OPTIND=1
-while getopts :fhqvx opt; do
+while getopts :fhlv opt; do
     case $opt in
         f ) feedback=1
             ;;
         h ) show_help
             exit 0
             ;;
-        q ) quiet=1
+        l ) include_laravel=1
             ;;
         v ) verbose=$((verbose+1))
-            ;;
-        x ) include_laravel=0
             ;;
         * ) echo -e "${RED}Invalid option: $OPTARG${NC}" 1>&2
             show_help >&2
@@ -150,15 +147,17 @@ fi
 
 if ((feedback>0))
 then
+    filename="$StudentFolder/feedback.md"
     log 1 "${CYAN}Create feedback file from template${NC}"
-    cp $StartFolder/FEEDBACK_TEMPLATE.md ../feedback.md
-    sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" ../feedback.md
+    cp $StartFolder/FEEDBACK_TEMPLATE.md $filename
+    sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" $filename
     
     log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
-    docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a ../feedback.md
+    docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a $filename
     log 1 "${CYAN}This output is also written to out.txt${NC}"
 
-    echo '```' >> ../feedback.md
+    echo '```' >> $filename
+    code $filename
 fi
 # Finally, return to the start folder
 log 1 "${CYAN}Return to the start folder${NC}"

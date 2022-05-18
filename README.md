@@ -47,7 +47,7 @@ Open a cmd in the folder where ctc.bat is located, and type:
 Open the terminal in the folder where ctc.sh is located, and type:
 
 ```shell script
-> ./ctc.sh student-repo-folder-name
+> ./ctc.sh -lf student-repo-folder-name
 ```
 
 
