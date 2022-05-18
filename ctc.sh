@@ -9,6 +9,7 @@ show_help() {
 cat << EOF
 Usage: ${0##*/} [-hvx] [FOLDER]
 Set the case exam template app state.
+    -f          also creates a fresh feedback file
     -h          display this help and exit
     -q          quiet mode
     -v          verbose mode. Can be used multiple times for increased
@@ -33,6 +34,7 @@ function log {
 }
 
 # Initialize our own variables:
+feedback=0
 include_laravel=1
 verbose=1
 quiet=0
@@ -41,8 +43,10 @@ folder=""
 # Resetting OPTIND is necessary if getopts was used previously in the script.
 # It is a good idea to make OPTIND local if you process options in a function.
 OPTIND=1
-while getopts :hqvx opt; do
+while getopts :fhqvx opt; do
     case $opt in
+        f ) feedback=1
+            ;;
         h ) show_help
             exit 0
             ;;
@@ -142,12 +146,20 @@ then
     else
         log 1 "${RED}Error during migration. Skipping database seeding${NC}"
     fi
-
-    log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
-    docker-compose exec -T laravel.test ./vendor/bin/phpcs >&1 | tee out.txt
-    log 1 "${CYAN}This output is also written to out.txt"
 fi
 
+if ((feedback>0))
+then
+    log 1 "${CYAN}Create feedback file from template${NC}"
+    cp $StartFolder/FEEDBACK_TEMPLATE.md ../feedback.md
+    sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" ../feedback.md
+    
+    log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
+    docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a ../feedback.md
+    log 1 "${CYAN}This output is also written to out.txt${NC}"
+
+    echo '```' >> ../feedback.md
+fi
 # Finally, return to the start folder
 log 1 "${CYAN}Return to the start folder${NC}"
 cd $StartFolder
