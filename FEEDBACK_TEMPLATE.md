@@ -1,65 +1,104 @@
 # EXAM FEEDBACK {{STUDENT_ACCOUNT_NAME}}
 ## 1. Refactoring/debugging
+- All MUST and SHOULD requirements implemented
 
 `YOUR SCORE: 5 - 0 = 5`
 
 ---
-## 2. Database & Application scaffolding
+## 2. Database & Application scaffolding [15pt]
+- All MUST and SHOULD requirements implemented
 
-`YOUR SCORE: 15 - 0 = 15` 
+MAY requirements [-2pt]:
+- +1 Factory; created and uses `faker()`
+- +1 Factory is used in seeder
+- +1 Other:
 
----
-## 3. Index
-
-MAY requirements [-3pt]
-+ Pagination
-+ Use accessors for business logic
-+ Dynamic styling using attribute values
-
-`YOUR SCORE: 10 - 0 = 10`
+`YOUR SCORE: 15 - 2 = 13` 
 
 ---
-## 4.1 CRUD - Functional Design
+## 3. Index [10pt]
+- All MUST and SHOULD requirements implemented
 
-`YOUR SCORE: 10 - 0 = 10`
+MAY requirements [-3pt]:
+- +1 Pagination
+- +1 Use accessors for business logic
+- +1 Dynamic styling using attribute values
+- +1 Other:
 
----
-## 4.2 CRUD - Implementation
-SHOW:
-CREATE:
-EDIT:
-DESTROY:
-
-MAY requirements (advanced topics) [-5pt]:
-+ Advanced validation
-+ Other form elements
-+ Session Flashing
-+ Modals
-+ Using Blade components
-+ Using Livewire
-+ Other:
-
-`YOUR SCORE: 35 - 0 = 35`
+`YOUR SCORE: 10 - 3 = 7`
 
 ---
-## 5. Relationships
+## 4.1 CRUD - Show [10pt]
+- All MUST and SHOULD requirements implemented
 
-MAY requirement (rollback) NOT implemented
+MAY requirements [-2pt]:
+- +1 Use accessors for business logic
+- +1 Dynamic styling using attribute values
+- +1 Other:
 
-`YOUR SCORE: 15 - 0 = 15` 
+`YOUR SCORE: 10 - 2 = 8`
 
 ---
-## 6. Handing in
+## 4.2 CRUD - Create [10pt]
+- All MUST and SHOULD requirements implemented
+
+MAY requirements [-3pt]:
+- +1 Advanced validation
+- +1 Client side validation
+- +1 Session Flashing
+- +1 Other:
+
+`YOUR SCORE: 10 - 3 = 7`
+
+---
+## 4.3 CRUD - Edit [15pt]
+- All MUST and SHOULD requirements implemented
+
+MAY requirements [-3pt]:
+- +1 Advanced validation
+- +1 Client side validation
+- +1 Session Flashing
+- +1 Other:
+
+`YOUR SCORE: 15 - 3 = 12`
+
+---
+## 4.4 CRUD - Destroy [10pt]
+- All MUST and SHOULD requirements implemented
+
+MAY requirements [-2pt]:
+- +1 Modals
+- +1 Session Flashing
+- +1 Other:
+
+`YOUR SCORE: 10 - 2 = 8`
+
+---
+## 5. Relationships [15pt]
+- All MUST and SHOULD requirements implemented
+
+MAY requirements [-5]:
+- +1 Rollback doesn't throw errors
+- +1 Factories are updated
+- +1 Seeders are updated
+- +1 Create maintains the relation
+- +1 Update maintains the relation
+- +1 Other:
+
+`YOUR SCORE: 15 - 5 = 10` 
+
+---
+## 6. Handing in [10pt]
+- All MUST and SHOULD requirements implemented
 
 `YOUR SCORE: 10 - 0 = 10`
 
 ---
 ## VIOLATIONS 
 
-TOTAL COUNT:
+`TOTAL COUNT: # + # = `
 
 ### MANUALLY DISCOVERED
-- 
 
 ### PHPCS ANALYSIS
 ```
