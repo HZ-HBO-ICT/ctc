@@ -1,5 +1,5 @@
 # EXAM FEEDBACK {{STUDENT_ACCOUNT_NAME}}
-## 1. Refactoring/debugging
+## 1. Refactoring/debugging [5pt]
 - All MUST and SHOULD requirements implemented
 
 `YOUR SCORE: 5 - 0 = 5`
