@@ -79,7 +79,7 @@ StudentAccountName=$1
 if [ ! -z "$StudentAccountName" ] 
 then
     # Assign and validate student folder
-    StudentFolder="$StudentsBaseFolder/$StudentAccountName"
+    StudentFolder="$StudentsBaseFolder/$StudentsBasePrefix$StudentAccountName"
     if [ ! -d $StudentFolder ]
     then
         echo -e "${RED}$StudentFolder does not exist${NC}" 1>&2
@@ -103,7 +103,7 @@ OPTIONS="--hard"
 (( verbose < 1 )) && OPTIONS="${OPTIONS} --quiet"
 exec_command "git reset ${OPTIONS}"
 
-log 1 "${CYAN}Clean the folder${NC}"
+log 1 "${CYAN}Git-clean the folder${NC}"
 OPTIONS="-d --force "
 (( verbose < 1 )) && OPTIONS="${OPTIONS} --quiet"
 exec_command "git clean ${OPTIONS}"
@@ -117,6 +117,8 @@ then
     # Loop through each element in the array
     for Filename in "${FileArray[@]}"
     do
+        # log 2 "${CYAN}Remove all files/folders from: ${NC}$Filename"
+        # exec_command "rm -rf $Filename"
         log 2 "${CYAN}Copy file/folder: ${NC}$Filename"
         OPTIONS="--recursive"
         ((verbose >=3)) && OPTIONS="${OPTIONS} -v"
@@ -155,9 +157,12 @@ then
     cp $StartFolder/FEEDBACK_TEMPLATE.md $filename
     sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" $filename
     
+    log 1 "${CYAN}Run PHP_CodeSniffer fixer for line endings${NC}"
+    docker-compose exec -T laravel.test ./vendor/bin/phpcbf --sniffs=Generic.Files.LineEndings
+
     log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
     docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a $filename
-    log 1 "${CYAN}This output is also written to out.txt${NC}"
+    log 1 "${CYAN}This output is also written to feedback.md${NC}"
 
     echo '```' >> $filename
     code $filename
