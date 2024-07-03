@@ -2,44 +2,43 @@
 ## 1. Refactoring/debugging [5pt]
 - All MUST and SHOULD requirements implemented
 
+MAY requirements [-0pt]:
+- +1 Other:
+
 `YOUR SCORE: 5 - 0 = 5`
 
 ---
 ## 2. Database & Application scaffolding [15pt]
 - All MUST and SHOULD requirements implemented
 
-MAY requirements [-2pt]:
-- +1 Factory; created and uses `faker()`
-- +1 Factory is used in seeder
+MAY requirements [-0pt]:
 - +1 Other:
 
-`YOUR SCORE: 15 - 2 = 13` 
+`YOUR SCORE: 15 - 0 = 15` 
 
 ---
 ## 3. Index [10pt]
 - All MUST and SHOULD requirements implemented
 
-MAY requirements [-3pt]:
+MAY requirements [-2pt]:
 - +1 Pagination
 - +1 Use accessors for business logic
-- +1 Dynamic styling using attribute values
-- +1 Other:
-
-`YOUR SCORE: 10 - 3 = 7`
-
----
-## 4.1 CRUD - Show [10pt]
-- All MUST and SHOULD requirements implemented
-
-MAY requirements [-2pt]:
-- +1 Use accessors for business logic
-- +1 Dynamic styling using attribute values
 - +1 Other:
 
 `YOUR SCORE: 10 - 2 = 8`
 
 ---
-## 4.2 CRUD - Create [10pt]
+## 4.1 CRUD - Show [7pt]
+- All MUST and SHOULD requirements implemented
+
+MAY requirements [-1pt]:
+- +1 Use accessors for business logic
+- +1 Other:
+
+`YOUR SCORE: 7 - 1 = 6`
+
+---
+## 4.2 CRUD - Create [13pt]
 - All MUST and SHOULD requirements implemented
 
 MAY requirements [-3pt]:
@@ -48,10 +47,10 @@ MAY requirements [-3pt]:
 - +1 Session Flashing
 - +1 Other:
 
-`YOUR SCORE: 10 - 3 = 7`
+`YOUR SCORE: 13 - 3 = 10`
 
 ---
-## 4.3 CRUD - Edit [15pt]
+## 4.3 CRUD - Edit [17pt]
 - All MUST and SHOULD requirements implemented
 
 MAY requirements [-3pt]:
@@ -60,10 +59,10 @@ MAY requirements [-3pt]:
 - +1 Session Flashing
 - +1 Other:
 
-`YOUR SCORE: 15 - 3 = 12`
+`YOUR SCORE: 17 - 3 = 14`
 
 ---
-## 4.4 CRUD - Destroy [10pt]
+## 4.4 CRUD - Destroy [8pt]
 - All MUST and SHOULD requirements implemented
 
 MAY requirements [-2pt]:
@@ -71,21 +70,20 @@ MAY requirements [-2pt]:
 - +1 Session Flashing
 - +1 Other:
 
-`YOUR SCORE: 10 - 2 = 8`
+`YOUR SCORE: 8 - 2 = 6`
 
 ---
 ## 5. Relationships [15pt]
 - All MUST and SHOULD requirements implemented
 
-MAY requirements [-5]:
+MAY requirements [-4]:
 - +1 Rollback doesn't throw errors
-- +1 Factories are updated
-- +1 Seeders are updated
-- +1 Create maintains the relation
-- +1 Update maintains the relation
+- +1 Seeders and Factories (when applicable) are updated to create related data
+- +1 The model's Create page is expanded to implement the relationship
+- +1 The model's Edit page is expanded to implement the relationship
 - +1 Other:
 
-`YOUR SCORE: 15 - 5 = 10` 
+`YOUR SCORE: 15 - 4 = 11` 
 
 ---
 ## 6. Handing in [10pt]

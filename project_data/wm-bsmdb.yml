@@ -1,0 +1,9 @@
+# Watermarks definition for the BugSlayer's Media Database exam project
+- file: database/migrations/2014_10_12_000001_create_users_table.php
+  renamedfrom: database/migrations/2014_10_12_000000_create_users_table.php
+- file: app/Http/Controllers/Controller.php
+  contains: // This controller belongs to the BsMDb project
+- file: resources/views/articles/index.blade.php
+  contains: '<div style="visibility: hidden">DFsd/lsfl434jdus8^^wsdkfjs</div>'
+- file: routes/api.php
+  contains: Route::get('/name', fn() => "Bugslayer's Media Database");

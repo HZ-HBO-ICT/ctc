@@ -1,0 +1,11 @@
+# Watermarks definition for the Starfleet exam project
+- file: database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php
+  renamedto: database/migrations/2014_14_12_100000_create_password_reset_tokens_table.php
+- file: database/migrations/2014_10_12_000000_create_users_table.php
+  contains: Starfleet
+- file: database/migrations/2024_02_29_100443_create_articles_table.php
+  contains: Starfleet
+- file: resources/views/articles/index.blade.php
+  contains: '<div style="visibility: hidden">Starfleet</div>'
+- file: routes/api.php
+  contains: Route::get('/name', fn() => "Starfleet");
