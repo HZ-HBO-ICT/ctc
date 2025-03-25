@@ -150,6 +150,7 @@ then
     fi
 fi
 
+# ======= Run PHPCodeSniffer and create the feedback file ===========
 if ((feedback>0))
 then
     filename="$StudentFolder/feedback.md"
@@ -167,6 +168,12 @@ then
     echo '```' >> $filename
     code $filename
 fi
+
+# Print the latest git commit log to check the timestamp of the last commit
+log 1 "${CYAN}Latest Git commit timestamp: ${NC}"
+exec_command "cd $StudentFolder"
+exec_command "git log -1"
+
 # Finally, return to the start folder
 log 1 "${CYAN}Return to the start folder${NC}"
 cd $StartFolder
