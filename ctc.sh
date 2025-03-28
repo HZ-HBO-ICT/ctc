@@ -7,10 +7,11 @@ RED='\033[0;31m'
 # Usage info
 function show_help {
 cat << EOF
-Usage: ${0##*/} [-fhlv] [FOLDER]
+Usage: ${0##*/} [-cfhlv] [FOLDER]
 Set the case exam template app state using git and cp and optional Laravel commands.
 It can also run PHP_CodeSniffer to preset a feedback md file in the students project 
 root directory
+    -c          always run PHP_CodeSniffer even when the -f switch is off
     -f          also creates a fresh feedback file with phpcs output in the
                 student folder and opens it with VSCode
     -h          display this help and exit
@@ -20,6 +21,8 @@ root directory
 
 [FOLDER] specifies the source folder of the students project to copy from. If
          omitted, ctc will only reset the case exam to the latest commit.
+
+NOTE: Normal usage when grading is: -fl
 EOF
 }
 
@@ -38,6 +41,7 @@ function log {
 # Initialize our own variables:
 feedback=0
 include_laravel=0
+run_phpcs=0
 verbose=1
 quiet=0
 folder=""
@@ -45,8 +49,10 @@ folder=""
 # Resetting OPTIND is necessary if getopts was used previously in the script.
 # It is a good idea to make OPTIND local if you process options in a function.
 OPTIND=1
-while getopts :fhlv opt; do
+while getopts :cfhlv opt; do
     case $opt in
+        c ) run_phpcs=1
+            ;;
         f ) feedback=1
             ;;
         h ) show_help
@@ -150,7 +156,35 @@ then
     fi
 fi
 
-# ======= Check for watermarks ===========
+# ========== Run PHP_CodeSniffer fixer for line endings =============
+log 1 "${CYAN}Run PHP_CodeSniffer fixer for line endings${NC}"
+docker-compose exec -T laravel.test ./vendor/bin/phpcbf --sniffs=Generic.Files.LineEndings
+
+# ======= Run PHPCodeSniffer and create the feedback file ===========
+if ((feedback>0))
+then
+    filename="$StudentFolder/feedback.md"
+    log 1 "${CYAN}Create feedback file from template${NC}"
+    cp $StartFolder/FEEDBACK_TEMPLATE.md $filename
+    sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" $filename
+    
+    log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
+    docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a $filename
+    log 1 "${CYAN}This output is also written to feedback.md${NC}"
+
+    echo '```' >> $filename
+    code $filename
+else
+    if ((run_phpcs>0))
+    then
+        log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
+        docker-compose exec -T laravel.test ./vendor/bin/phpcs
+    else
+        log 2 "Skipping PHP_CodeSniffer"
+    fi
+fi
+
+# =============== Check for watermarks =================
 # Function to check if a file exists
 check_file_presence() {
     if [ -f "$1" ]; then
@@ -234,29 +268,17 @@ while IFS= read -r check; do
     esac
 done <<< "$Watermarks"
 
-# ======= Run PHPCodeSniffer and create the feedback file ===========
-if ((feedback>0))
-then
-    filename="$StudentFolder/feedback.md"
-    log 1 "${CYAN}Create feedback file from template${NC}"
-    cp $StartFolder/FEEDBACK_TEMPLATE.md $filename
-    sed -i "s/{{STUDENT_ACCOUNT_NAME}}/$StudentAccountName/" $filename
-    
-    log 1 "${CYAN}Run PHP_CodeSniffer fixer for line endings${NC}"
-    docker-compose exec -T laravel.test ./vendor/bin/phpcbf --sniffs=Generic.Files.LineEndings
-
-    log 1 "${CYAN}Run PHP_CodeSniffer${NC}"
-    docker-compose exec -T laravel.test ./vendor/bin/phpcs | tee -a $filename
-    log 1 "${CYAN}This output is also written to feedback.md${NC}"
-
-    echo '```' >> $filename
-    code $filename
-fi
 
 # Print the latest git commit log to check the timestamp of the last commit
-log 1 "${CYAN}Latest Git commit timestamp: ${NC}"
-exec_command "cd $StudentFolder"
-exec_command "git log -1"
+log 2 "Echoing the log of the latest commit."
+if [ ! -z "$StudentAccountName" ]
+then
+    log 1 "${CYAN}Latest Git commit timestamp: ${NC}"
+    exec_command "cd $StudentFolder"
+    exec_command "git log -1"
+else
+    log 2 "No students account name specified. Skipped this check"
+fi
 
 # Finally, return to the start folder
 log 1 "${CYAN}Return to the start folder${NC}"
