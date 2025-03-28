@@ -95,7 +95,7 @@ else
 fi
 
 # =================== Use GIT to reset the project ==========================
-log 1 "${CYAN}Switch to Case Exam Template folder${NC}"
+log 1 "${CYAN}Switch to Case Exam Template folder:${NC} $ProjectFolder"
 exec_command "cd $ProjectFolder"
 
 log 1 "${CYAN}Reset the folder to the HEAD version in git${NC}"
@@ -149,6 +149,90 @@ then
         log 1 "${RED}Error during migration. Skipping database seeding${NC}"
     fi
 fi
+
+# ======= Check for watermarks ===========
+# Function to check if a file exists
+check_file_presence() {
+    if [ -f "$1" ]; then
+        log 1 "✅ File '$1' is present."
+    else
+        log 1 "❌ File '$1' is missing!"
+    fi
+}
+
+# Function to check if a file is NOT present
+check_file_absence() {
+    if [ ! -f "$1" ]; then
+        echo "✅ File '$1' is NOT present as expected."
+    else
+        echo "❌ File '$1' SHOULD NOT be present but was found!"
+    fi
+}
+
+check_file_renamed() {
+    if [ ! -f "$1" ] && [ -f "$2" ]; then
+        echo "✅ File '$1' has been renamed to '$2'."
+    else
+        echo "❌ File rename check failed! Either '$1' still exists or '$2' is missing."
+    fi
+}
+
+# Function to check if content is present in a file
+check_content_presence() {
+    if grep -q "$2" "$1"; then
+        log 1 "✅ Content '$2' found in '$1'."
+    else
+        log 1 "❌ Content '$2' NOT found in '$1'."
+    fi
+}
+
+# Function to check if content is absent in a file
+check_content_absence() {
+    if grep -q "$2" "$1"; then
+        log 1 "❌ Content '$2' SHOULD NOT be in '$1' but was found!"
+    else
+        log 1 "✅ Content '$2' is NOT present in '$1' as expected."
+    fi
+}
+
+log 1 "${CYAN}Checking the watermarks${NC}"
+
+# Loop through each check in the CHECKS variable
+while IFS= read -r check; do
+    # Ignore empty lines
+    [[ -z "$check" ]] && continue
+
+    # Split the string using the delimiter "|"
+    TYPE=$(echo "$check" | cut -d '|' -f 1)
+    PARAM0=$(echo "$check" | cut -d '|' -f 2)
+    PARAM1=$(echo "$check" | cut -d '|' -f 3)
+
+    # Trim leading and trailing spaces using sed
+    TYPE=$(echo "$TYPE" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    PARAM0=$(echo "$PARAM0" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    PARAM1=$(echo "$PARAM1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+    case "$TYPE" in
+        "file_presence")
+            check_file_presence "${PARAM0}"
+            ;;
+        "content_presence")
+            check_content_presence "${PARAM0}" "${PARAM1}"
+            ;;
+        "file_absence")
+            check_file_absence "${PARAM0}"
+            ;;
+        "content_absence")
+            check_content_absence "${PARAM0}" "${PARAM1}"
+            ;;
+        "file_renamed")
+            check_file_renamed "${PARAM0}" "${PARAM1}"
+            ;;
+        *)
+            echo "❌ Unknown check type: '$TYPE'. Please set a valid TYPE."
+            ;;
+    esac
+done <<< "$Watermarks"
 
 # ======= Run PHPCodeSniffer and create the feedback file ===========
 if ((feedback>0))
